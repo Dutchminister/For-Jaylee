@@ -1,4 +1,6 @@
-# For-Jaylee
-I made this just for you - Happy Valentine's Day
+# For Jaaylee
 
-[Click Here](https://dutchminister.github.io/For-Jaylee/)  ♥
+I made this for you.  
+Happy Valentine’s Day 🤍
+
+[View it here](https://dutchminister.github.io/For-Jaylee/)
