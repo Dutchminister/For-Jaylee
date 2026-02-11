@@ -2,70 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Caricature Animation</title>
-		<style>
-		/* 1. Reset Body to allow for tall, scrolling canvas if needed */
-		body { 
-			display: flex; 
-			justify-content: center; 
-			align-items: flex-start; 
-			min-height: 100vh; 
-			margin: 0; 
-			background: #f9f9f9; 
-			padding: 20px;
-		}
+    <title>Valentine's Surprise</title>
+	<style>
+	/* 1. Reset Body to allow for tall, scrolling canvas if needed */
+	/* 1. Force the body to be a fixed anchor */
+	body { 
+		margin: 0;
+		padding: 0;
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #fff0f5;
+		overflow: hidden; /* Keeps hearts and SVG from causing scrollbars */
+	}
 
-		/* 2. Container: allows SVG to scale naturally */
-		.container { 
-			width: 100%;
-			max-width: 900px;
-			margin: auto;
-		}
+	/* 2. Container: Acts as the stage */
+	.container { 
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
 
-		/* 3. SVG base styling */
-		#svg1 {
-			opacity: 0; /* fade-in SVG itself */
-			width: 100% !important;
-			height: auto !important;
-			display: block;
-			stroke-linecap: round;
-			stroke-linejoin: round;
-		}
+	/* 3. SVG: Forced Centering */
+	#svg1 {
+		display: none; /* Hidden until button is pressed */
+		opacity: 0;
+		position: absolute; /* Takes it out of the normal flow to center it perfectly */
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%); /* The secret sauce for perfect centering */
+		width: 85vw !important; 
+		max-width: 600px;
+		height: auto !important;
+		z-index: 10;
+	}
 
-		/* 4. Ready state for smooth fade-in */
-		#svg1.ready {
-			opacity: 1;
-			transition: opacity 0.3s ease-in-out;
-		}
+	#svg1.ready {
+		display: block;
+		opacity: 1;
+		transition: opacity 0.5s ease;
+	}
 
-		/* 5. Fill shapes (FILL_SHAPES layer) */
-		.fill {
-			fill-opacity: 0;
-			transition: fill-opacity 1.5s ease-in-out;
-		}
+	/* 5. Fill shapes (FILL_SHAPES layer) */
+	.fill {
+		fill-opacity: 0;
+		transition: fill-opacity 1.5s ease-in-out;
+	}
 
-		/* Optional: humanized stagger for fills */
-		.fill:nth-child(3n) { transition-delay: 0.2s; }
-		.fill:nth-child(3n+1) { transition-delay: 0.5s; }
-		.fill:nth-child(3n+2) { transition-delay: 0.8s; }
+	/* Optional: humanized stagger for fills */
+	.fill:nth-child(3n) { transition-delay: 0.2s; }
+	.fill:nth-child(3n+1) { transition-delay: 0.5s; }
+	.fill:nth-child(3n+2) { transition-delay: 0.8s; }
 
-		/* 6. Decorative elements (DECORATIONS layer) */
-		.decor {
-			opacity: 0;
-			transition: opacity 1s ease-in-out;
-		}
-		</style>
+	/* 6. Decorative elements (DECORATIONS layer) */
+	.decor {
+		opacity: 0;
+		transition: opacity 1s ease-in-out;
+	}
 
-<div class="container">
-    <!-- Tap to start button -->
-    <button id="startButton" onclick="startAnimation()" 
-        style="padding:12px 20px; font-size:16px; cursor:pointer; background:#ffb6c1; border:none; border-radius:8px; color:white; margin-bottom:20px;">
-        Tap to start 🎵
-    </button>
+	/* 7. Valentine-themed Button */
+	#startButton {
+		padding: 14px 28px;
+		font-size: 18px;
+		cursor: pointer;
+		background: linear-gradient(135deg, #ff9ec4, #ff5fa0);
+		border: none;
+		border-radius: 50px;
+		color: white;
+		box-shadow: 0 4px 12px rgba(255, 95, 160, 0.6);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		margin-bottom: 20px;
+		z-index: 1;
+	}
 
-    <!-- Audio (looped) -->
-    <audio id="bg-music" src="assets/Opalite.mp3" preload="auto" loop></audio>
-		
+	#startButton:hover {
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(255, 95, 160, 0.8);
+	}
+
+	/* 8. Floating hearts animation */
+	.heart {
+		position: absolute;
+		font-size: 24px;
+		color: #ff5fa0;
+		animation: floatHearts 2s linear forwards;
+		pointer-events: none;
+	}
+
+	@keyframes floatHearts {
+		0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+		100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+	}
+	</style>
+
+	<div class="container">
+		<div id="intro-content">
+			<h1 style="color:#ff5fa0; text-align:center; margin-bottom:12px;">
+				Happy Valentine’s Day Jaylee! 💌
+			</h1>
+			<p style="text-align:center; color:#ff5fa0; font-size:16px; margin-bottom:20px;">
+				Tap the button to reveal your surprise 🎶
+			</p>
+
+			<button id="startButton" onclick="startAnimation()">💖 Tap to start 🎵</button>
+		</div>
+
+		<audio id="bg-music" src="assets/Opalite.mp3" preload="auto" loop></audio>
+	</div>
 <svg
    version="1.1"
    id="svg1"
@@ -1081,32 +1130,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vivus@latest/dist/vivus.min.js"></script>
 
+
 <script>
+// Grab the wrapper div instead of just the button
+const introContent = document.getElementById('intro-content');
 const svg = document.getElementById('svg1');
 const music = document.getElementById('bg-music');
-const startButton = document.getElementById('startButton');
 
 function startAnimation() {
-    // Hide the button immediately
-    startButton.style.display = 'none';
+	// Hide the intro
+		document.getElementById('intro-content').style.display = 'none';
+	// Reveal and Prepare SVG
+		svg.style.display = 'block'; // Force display before Vivus starts
+		setTimeout(() => {
+			svg.classList.add('ready');
+		}, 10);
 
-    // Fade in SVG
-    svg.classList.add('ready');
+    // Play music
+    music.play().catch(error => console.log("Music play blocked:", error));
 
-    // Try to play music
-    const playPromise = music.play();
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            console.log("Music started!");
-        }).catch((error) => {
-            console.error("Failed to start music:", error);
-        });
-    }
-
-    // Initialize Vivus animation
-    new Vivus(svg, {
+    // Start Vivus Animation
+    // Note: If 'svg' is already defined above, Vivus can use the variable directly
+    new Vivus('svg1', {
         type: 'oneByOne',
-        duration: 3500,
+        duration: 4500,
         start: 'autostart',
         dashGap: 20,
         animTimingFunction: Vivus.EASE_OUT,
@@ -1114,7 +1161,6 @@ function startAnimation() {
     }, function(obj) {
         // Reveal fills
         document.querySelectorAll('#svg1 .fill').forEach(el => el.style.fillOpacity = 1);
-
         // Reveal decorations with stagger
         document.querySelectorAll('#svg1 .decor').forEach((el, i) => {
             setTimeout(() => el.style.opacity = 1, i * 200);
